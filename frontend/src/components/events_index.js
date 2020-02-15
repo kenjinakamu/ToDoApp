@@ -47,8 +47,8 @@ class EventsIndex extends Component {
             >
               <TableRow>
                 <TableHeaderColumn>ID</TableHeaderColumn>
-                <TableHeaderColumn>Title</TableHeaderColumn>
-                <TableHeaderColumn>Body</TableHeaderColumn>
+                <TableHeaderColumn>タイトル</TableHeaderColumn>
+                <TableHeaderColumn>詳細</TableHeaderColumn>
               </TableRow>
             </TableHeader>
 
