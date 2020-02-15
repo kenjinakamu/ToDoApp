@@ -1,23 +1,25 @@
+import _ from 'lodash';
 import {
   CREATE_EVENT,
+  READ_EVENTS,
+  READ_EVENT,
+  UPDATE_EVENT,
   DELETE_EVENT,
-  DELETE_ALL_EVENTS
 } from '../actions'
 
-const events = (state = [], action) => {
-  switch(action.type) {
+export default (events = {}, action) => {
+  switch (action.type) {
     case CREATE_EVENT:
-      const event = { title: action.title, body: action.body }
-      const length = state.length;
-      const id = length === 0 ? 1 : state[length - 1].id + 1;
-      return [...state, { id, ...event }];
+    case READ_EVENT:
+    case UPDATE_EVENT:
+      const data = action.response.data;
+      return { ...events, [data.id]: data }
+    case READ_EVENTS:
+      return _.mapKeys(action.response.data, 'id')
     case DELETE_EVENT:
-      return state.filter(event => event.id !== action.id);
-    case DELETE_ALL_EVENTS:
-      return [];
+      delete events[action.id]
+      return { ...events }
     default:
-      return state;
+      return events
   }
 }
-
-export default events;

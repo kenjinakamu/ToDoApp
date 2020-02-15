@@ -1,12 +1,14 @@
 package com.example.demo.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "todo")
+@EqualsAndHashCode(callSuper = false)
 public class Todo extends TimestampEntity {
 
     @Id

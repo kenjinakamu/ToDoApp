@@ -1,9 +1,5 @@
 import { combineReducers } from 'redux';
-
+import { reducer as form } from 'redux-form';
 import events from './events';
-import operationLogs from './operationLogs'
 
-export default combineReducers({ 
-  events,
-  operationLogs
-});
+export default combineReducers({ events, form })
