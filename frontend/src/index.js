@@ -9,7 +9,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import reducer from './reducers/IndexReducer';
 import TodoList from './components/TodoList';
-import TodoCreate from './components/TodoCreate';
 import TodoDetail from './components/TodoDetail';
 
 const enhancer = process.env.NODE_ENV === 'development' ?
@@ -21,7 +20,6 @@ ReactDOM.render(
       <Provider store={store}>
         <BrowserRouter>
           <Switch>
-            <Route path="/new" component={TodoCreate}/>
             <Route path="/detail/:id" component={TodoDetail}/>
             <Route exact path="/" component={TodoList}/>
           </Switch>

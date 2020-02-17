@@ -2,25 +2,85 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
-import {Fab, Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-import {getTodoList} from '../actions/TodoAction';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fab,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField
+} from '@material-ui/core';
+import {createTodo, getTodoList} from '../actions/TodoAction';
+import {Field, reduxForm} from "redux-form";
 
 class TodoList extends Component {
+  constructor(props) {
+    super(props);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.state = {
+      isOpened: false
+    }
+  }
+
   componentDidMount() {
-    this.props.getTodoList()
+    this.props.getTodoList();
+  }
+
+  async onSubmit(values) {
+    await this.props.createTodo(values);
+    this.props.getTodoList();
+    this.handleClose();
+  }
+
+  handleOpen = () => {
+    this.setState({
+      isOpened: true
+    })
+  }
+
+  handleClose = () => {
+    this.setState({
+      isOpened: false
+    })
+  }
+
+  renderField(field) {
+    const {input, label, type, meta: {touched, invalid, error}, rows} = field;
+    return (
+        <TextField
+            style={{margin: 12}}
+            label={label}
+            type={type}
+            multiline
+            rows={rows}
+            error={touched && invalid}
+            helperText={touched && invalid && error}
+            {...input}
+            fullWidth={true}
+            variant="outlined"
+        />
+    )
   }
 
   render() {
+    const {handleSubmit, pristine, submitting, invalid} = this.props;
     const {todoList} = this.props.events;
-    const style = {
-      position: "fixed",
-      right: 36,
-      bottom: 36
+    const {isOpened} = this.state;
+    const addStyle = {
+      float: "right",
+      marginTop: 16,
+      marginRight: 16
     }
 
     return (
         <React.Fragment>
-          <Fab size="medium" aria-label="add" style={style} component={Link} to="/new">
+          <Fab size="medium" aria-label="add" style={addStyle} onClick={this.handleOpen}>
             <AddIcon/>
           </Fab>
 
@@ -49,13 +109,42 @@ class TodoList extends Component {
               }
             </TableBody>
           </Table>
+          <Dialog onClose={this.handleClose} open={isOpened}>
+            <DialogTitle>新規登録</DialogTitle>
+            <DialogContent>
+              <form onSubmit={handleSubmit(this.onSubmit)}>
+                <div>
+                  <Field label="件名" name="title" type="text" rows="" component={this.renderField}/>
+                  <Field label="詳細" name="detail" type="text" rows="4" component={this.renderField}/>
+                </div>
+                <DialogActions>
+                  <Button variant="outlined" type="submit"
+                          disabled={pristine || submitting || invalid}>登録</Button>
+                  <Button variant="outlined" onClick={this.handleClose}>キャンセル</Button>
+                </DialogActions>
+              </form>
+            </DialogContent>
+
+
+          </Dialog>
         </React.Fragment>
     )
   }
 }
 
+const validate = values => {
+  const errors = {}
+
+  if (!values.title) errors.title = "件名を入力してください。"
+  if (!values.detail) errors.detail = "詳細を入力してください。"
+
+  return errors
+}
+
 const mapStateToProps = state => ({events: state.events})
 
-const mapDispatchToProps = ({getTodoList})
+const mapDispatchToProps = ({getTodoList, createTodo})
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    reduxForm({validate, form: 'todoCreateForm'})(TodoList)
+);
