@@ -22,10 +22,10 @@ import {Field, reduxForm} from "redux-form";
 class TodoList extends Component {
   constructor(props) {
     super(props);
-    this.onSubmit = this.onSubmit.bind(this);
     this.state = {
       isOpened: false
     }
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -77,9 +77,12 @@ class TodoList extends Component {
       marginTop: 16,
       marginRight: 16
     }
+    const dialogStyle = {
+      marginRight: 24
+    }
 
     return (
-        <React.Fragment>
+        <>
           <Fab size="medium" aria-label="add" style={addStyle} onClick={this.handleOpen}>
             <AddIcon/>
           </Fab>
@@ -91,7 +94,6 @@ class TodoList extends Component {
                 <TableCell>詳細</TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
               {
                 (todoList) ?
@@ -109,9 +111,10 @@ class TodoList extends Component {
               }
             </TableBody>
           </Table>
+          
           <Dialog onClose={this.handleClose} open={isOpened}>
             <DialogTitle>新規登録</DialogTitle>
-            <DialogContent>
+            <DialogContent style={dialogStyle}>
               <form onSubmit={handleSubmit(this.onSubmit)}>
                 <div>
                   <Field label="件名" name="title" type="text" rows="" component={this.renderField}/>
@@ -124,10 +127,8 @@ class TodoList extends Component {
                 </DialogActions>
               </form>
             </DialogContent>
-
-
           </Dialog>
-        </React.Fragment>
+        </>
     )
   }
 }
