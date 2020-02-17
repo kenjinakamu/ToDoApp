@@ -9,7 +9,7 @@ export const DELETE_TODO = 'DELETE_TODO';
 const ROOT_URL = 'http://localhost:8080/api';
 
 export const createTodo = values => async dispatch => {
-  values["isCompleted"] = false;
+  values['isCompleted'] = false;
   const response = await axios.post(`${ROOT_URL}/todo`, values)
   dispatch({type: CREATE_TODO, response})
 }

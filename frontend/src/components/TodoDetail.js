@@ -2,12 +2,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form';
 import {Link} from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import {Button, TextField} from '@material-ui/core';
+import {deleteTodo, getTodo, updateTodo} from '../actions/TodoAction';
 
-import {deleteTodo, getTodo, updateTodo} from '../actions/todoAction';
-
-class EventsShow extends Component {
+class TodoDetail extends Component {
   constructor(props) {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
@@ -20,13 +18,14 @@ class EventsShow extends Component {
   }
 
   renderField(field) {
-    const {input, label, type, meta: {touched, error}} = field;
+    const {input, label, type, meta: {touched, invalid, error}} = field;
     return (
         <TextField
-            hintText={label}
-            floatingLabelText={label}
+            style={{margin: 12}}
+            label={label}
             type={type}
-            errorText={touched && error}
+            error={touched && invalid}
+            helperText={touched && invalid && error}
             {...input}
             fullWidth={true}
         />
@@ -51,14 +50,15 @@ class EventsShow extends Component {
     return (
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <div>
-            <Field label="Title" name="title" type="text" component={this.renderField}/>
-            <Field label="Detail" name="detail" type="text" component={this.renderField}/>
+            <Field label="件名" name="title" type="text" component={this.renderField}/>
+            <Field label="詳細" name="detail" type="text" component={this.renderField}/>
           </div>
 
           <div>
-            <RaisedButton label="Submit" type="submit" style={style} disabled={pristine || submitting || invalid}/>
-            <RaisedButton label="Cancel" style={style} containerElement={<Link to="/"></Link>}/>
-            <RaisedButton label="Delete" style={style} onClick={this.onDeleteClick}/>
+            <Button variant="outlined" type="submit" style={style}
+                    disabled={pristine || submitting || invalid}>更新</Button>
+            <Button variant="outlined" component={Link} to="/">キャンセル</Button>
+            <Button variant="outlined" style={style} onClick={this.onDeleteClick}>削除</Button>
           </div>
         </form>
     )
@@ -68,8 +68,8 @@ class EventsShow extends Component {
 const validate = values => {
   const errors = {}
 
-  if (!values.title) errors.title = "Enter a title, please."
-  if (!values.detail) errors.detail = "Enter a detail, please."
+  if (!values.title) errors.title = "件名を入力してください。"
+  if (!values.detail) errors.detail = "詳細を入力してください。"
 
   return errors
 }
@@ -82,5 +82,5 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = ({deleteTodo, getTodo, updateTodo});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    reduxForm({validate, form: 'eventShowForm', enableReinitialize: true})(EventsShow)
+    reduxForm({validate, form: 'eventShowForm', enableReinitialize: true})(TodoDetail)
 );
